@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>¡Feliz día!</title>
+  <style>
+    /* ----- GLOBAL ----- */
+    :root {
+      --heart-color: #ff4d4d;
+      --heart-glow : #ff1a1a;
+      --btn-color  : #ff77d0;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    /* ----- ESTRELLAS ----- */
+    canvas#stars {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    /* ----- CORAZONES ----- */
+    .heart {
+      position: absolute;
+      pointer-events: none;
+      animation: fallDown linear forwards;
+      color: var(--heart-color);
+      text-shadow:
+        0 0 6px  var(--heart-glow),
+        0 0 12px var(--heart-glow),
+        0 0 18px var(--heart-glow);
+      z-index: 1;
+    }
+
+    @keyframes fallDown {
+      from { transform: translateY(-20vh); opacity: 1; }
+      to   { transform: translateY(110vh); opacity: 0.2; }
+    }
+
+    /* ----- BOTÓN CENTRAL ----- */
+    #go-msg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 18px 30px;
+      border: none;
+      border-radius: 12px;
+      background: var(--btn-color);
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow:
+        0 0 10px rgba(255,119,208,0.6),
+        0 0 20px rgba(255,119,208,0.4);
+      transition: transform 0.15s;
+      z-index: 2;
+    }
+
+    #go-msg:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Lienzo de estrellas -->
+  <canvas id="stars"></canvas>
+
+  <!-- Botón que lleva al mensaje -->
+  <button id="go-msg" onclick="location.href='mensaje.html'">
+    Feliz Día a la mejor novia del mundo
+  </button>
+
+  <script>
+    /* ===== ESTRELLAS ===== */
+    const canvas = document.getElementById("stars");
+    const ctx    = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width  = innerWidth;
+      canvas.height = innerHeight;
+      drawStars();
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < 550; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const r = Math.random() * 1.5;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(255,255,255,${Math.random()})`;
+        ctx.fill();
+      }
+    }
+    addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    /* ===== CORAZONES FLOTANTES ===== */
+    function crearCorazon() {
+      const span = document.createElement("span");
+      span.className  = "heart";
+      span.textContent = "♡";
+
+      /* Posición y tamaño aleatorios */
+      span.style.left  = `${Math.random() * 100}%`;
+      span.style.fontSize = `${20 + Math.random() * 40}px`;  // 20–60 px
+      span.style.animationDuration = `${6 + Math.random() * 5}s`;
+
+      /* Eliminar al terminar la animación */
+      span.addEventListener("animationend", () => span.remove());
+      document.body.appendChild(span);
+    }
+    /* Uno nuevo cada 300 ms */
+    setInterval(crearCorazon, 300);
+  </script>
+</body>
+</html>
